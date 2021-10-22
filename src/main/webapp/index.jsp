@@ -1,6 +1,4 @@
-<%@ page import="extra.XYRResStorage" %>
-<%@ page import="java.util.ArrayList" %>
-<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <% request.setCharacterEncoding("UTF-8"); %>
 
@@ -10,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Web project #1</title>
-    <link rel="icon" href="./resources/icon-programmer-25.jpg">
+    <link rel="icon" href="icon-programmer-25.jpg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -55,6 +53,15 @@
             </form>
         </div>
     </div>
+    <%--<%!public static ArrayList<XYRResStorage> listOfStorages = new ArrayList<>();%>
+    <%
+        try {
+            XYRResStorage storage = (XYRResStorage) request.getServletContext().getAttribute("rawOfValues");
+            if (storage!=null && listOfStorages!=null){
+                listOfStorages.add(storage);
+            }
+        } catch (Exception e){}
+    %>--%>
     <div class="panel rightpane">
         <table id="server_results">
             <tbody id="tbody-results">
@@ -64,43 +71,20 @@
                     <th>R</th>
                     <th>Результат</th>
                 </tr>
-                <%--<%!public static ArrayList<XYRResStorage> listOfStorages = new ArrayList<>();%>
-                <%
-                    try {
-                        XYRResStorage storage = (XYRResStorage) request.getServletContext().getAttribute("rawOfValues");
-                        if (storage!=null && listOfStorages!=null){
-                            listOfStorages.add(storage);
-                        }
-                    } catch (Exception e){}
-
-                    /*if (listOfStorages!= null && listOfStorages.size()>0){
-                        for (XYRResStorage st : listOfStorages){
-                            out.print("<tr>\n"+"<td>"+st.getX()+"</td>\n"+"<td>"+st.getY()+"</td>\n"+"<td>"+st.getR()+"</td>\n"+"<td>"+st.getRes().toString()+"</td>\n"+"</tr");
-                            *//*out.println("<td>"+st.getX()+"</td>");
-                            out.println("<td>"+st.getY()+"</td>");
-                            out.println("<td>"+st.getR()+"</td>");
-                            out.println("<td>"+st.getRes().toString()+"</td>");
-                            out.println("</tr>");*//*
-                        }
-                    }*/
-                %>
-                <%if (listOfStorages!= null && listOfStorages.size()>0){%>
-                    <% for(XYRResStorage st : listOfStorages) { %>
+                <c:forEach items="${results}" var="result">
                     <tr>
-                        <td><%=st.getX()%></td>
-                        <td><%=st.getY()%></td>
-                        <td><%=st.getR()%></td>
-                        <td><%=st.getRes().toString()%></td>
-                        </tr>
+                        <td>${result.getX()}</td>
+                        <td>${result.getY()}</td>
+                        <td>${result.getR()}</td>
+                        <td>${result.getRes()}</td>
                     </tr>
-                    <% } %>
-                <% } %>--%>
-
+                </c:forEach>
             </tbody>
         </table>
     </div>
 </div>
 <footer class="footer header-or-footer">
+
 
 </footer>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -144,6 +128,8 @@
 
                     },
                     success: function (data) {
+                        /*let table = data.getElementById("tbody-results").innerHTML;
+                        document.getElementById("tbody-results").innerHTML = table;*/
                         document.innerHTML = data;
                         location.reload(true);
                     }

@@ -3,10 +3,13 @@ package servlets;
 import extra.XYRResStorage;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AreaCheckServlet extends HttpServlet  {
 
@@ -25,9 +28,13 @@ public class AreaCheckServlet extends HttpServlet  {
             x = Double.parseDouble(xString);
             y = Double.parseDouble(yString);
             r = Double.parseDouble(rString);
-            boolean isPointInArea = checkArea(x, y, r); //TODO and what??
+            boolean isPointInArea = checkArea(x, y, r);
+            Cookie[] cookies = req.getCookies();
+            /*Cookie cookie = new Cookie();*/
             XYRResStorage storage = new XYRResStorage(x, y, r, isPointInArea);
-            getServletContext().setAttribute("rawOfValues", storage);
+            /*getServletContext().setAttribute("rawOfValues", storage);*/
+            ArrayList<XYRResStorage> resStorages = (ArrayList<XYRResStorage>) getServletContext().getAttribute("results");
+            resStorages.add(storage);
             getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
         } catch (NumberFormatException e){
             resp.sendError(400, "Incorrect arguments"); //todo
@@ -88,5 +95,11 @@ public class AreaCheckServlet extends HttpServlet  {
         }
 
         return res;
+    }
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        getServletContext().setAttribute("results", new ArrayList<XYRResStorage>());
     }
 }

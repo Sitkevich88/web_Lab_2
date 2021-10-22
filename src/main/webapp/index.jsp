@@ -9,7 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Web project #1</title>
     <link rel="icon" href="icon-programmer-25.jpg">
-    <link rel="stylesheet" href="style.css">
+    <%--<link rel="stylesheet" href="style.css">--%>
+    <link rel="stylesheet" href="css/structure.css">
+    <link rel="stylesheet" href="css/theme1.css">
 </head>
 <body>
 <header class="header header-or-footer">
@@ -160,7 +162,7 @@
     });
 
 </script>
-<script src="canvasManipulations.js"></script>
-<script src="xButtonsManipulations.js"></script>
+<script src="js/canvasManipulations.js"></script>
+<script src="js/xButtonsManipulations.js"></script>
 </body>
 </html>

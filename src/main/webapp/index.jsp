@@ -10,12 +10,15 @@
     <title>Web project #1</title>
     <link rel="icon" href="icon-programmer-25.jpg">
     <%--<link rel="stylesheet" href="style.css">--%>
-    <link rel="stylesheet" href="css/structure.css">
-    <link rel="stylesheet" href="css/theme1.css">
+    <%--<link rel="stylesheet" href="css/structure.css">
+    <link rel="stylesheet" href="css/theme1.css">--%>
+    <link rel="stylesheet" href="css/style-with-themes.css">
+    <script src="js/themes-changer.js"></script>
 </head>
 <body>
 <header class="header header-or-footer">
     <p>Ситкевич Валерий Андреевич P3214 вариант 5252</p>
+    <button id="switch" onclick="toggleTheme()">Сменить тему</button>
 </header>
 <div class="grid-container">
     <div class="panel leftpane">
@@ -35,7 +38,6 @@
                     <input type="button" value="1" id="x7" name="x" onclick="unbuttonAllExcept(this)">
                     <input type="button" value="1.5" id="x8" name="x" onclick="unbuttonAllExcept(this)">
                     <input type="button" value="2" id="x9" name="x" onclick="unbuttonAllExcept(this)">
-
                     <br><br>
                 </div>
 

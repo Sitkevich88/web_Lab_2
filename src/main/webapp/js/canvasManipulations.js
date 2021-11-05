@@ -5,17 +5,19 @@ const h = cv.height;
 const scale = 5;
 const unit = (h / (2*scale))*0.9;
 var globalX;
+var dots = new Array();
 
 
+//если r уже установлено, то функция нажимает на нужную кнопку x, вводит значение в поле y, сохраняет x в globalX
 function setCoordinates(x, y) {
     if (isRSet()){
         setX(x);
         setY(y);
-        /*alert("Good");*/
     } else {
         alert("Сначала надо определить R");
     }
 }
+//валидация y, ввод значения в поле
 function setY(y){
     if (y<-5){
         y=-5;
@@ -24,6 +26,7 @@ function setY(y){
     }
     document.getElementById("yname").value = y.toFixed(3);;
 }
+//валидация x, выбор нужной кнопки
 function setX(x) {
     let arrayOfx = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
     let res;
@@ -44,34 +47,42 @@ function setX(x) {
     let button = document.getElementById(buttonId);
     button.click();
     button.focus();
-
 }
+//проверка, выбрано ли r
 function isRSet(){
     return Number($("select.rvalues").children("option:selected").val()) > 0;
 }
+//при перезагрузке страници отрисовка canvas занаво
 window.onload = function() {
+    dots = JSON.parse($.cookie('dots'));
     redraw();
 }
+//при изменение параметра r изменяется размер фигуры на координатной плоскости
 $(document).ready(function () {
+    $.cookie.json = true;
     $("select.rvalues").change(function(){
         redraw();
     });
 })
+//мы определяем координаты клика на canvas
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
         x: convertXtoUnits(evt.clientX - rect.left),
         y: convertYtoUnits(evt.clientY - rect.top)
-        /*y: evt.clientY - rect.top*/
     };
 }
+//в силу масштабируемости окна нужно конвертировать x в реальное значение
 function convertXtoUnits(x1){
-    return (x1 - document.getElementById("graph").clientWidth/2)/( document.getElementById("graph").clientWidth/ ((2*scale))*0.9);
+    let localWidth = document.getElementById("graph").clientWidth;
+    return (x1 - localWidth/2)/( localWidth * 0.9/ (2*scale));
 }
+//в силу масштабируемости окна нужно конвертировать y в реальное значение
 function convertYtoUnits(y1){
-    return (document.getElementById("graph").clientHeight/2 - y1)/((document.getElementById("graph").clientHeight / (2*scale))*0.9);
+    let localHeight = document.getElementById("graph").clientHeight;
+    return (localHeight/2 - y1)/(localHeight * 0.9 / (2*scale));
 }
-
+//при клике по canvas определяем координаты и устанавливаем
 cv.addEventListener('click', function(evt) {
     var mousePos = getMousePos(cv, evt);
     setCoordinates(mousePos.x, mousePos.y);
@@ -88,7 +99,7 @@ function redraw(){
     }
     clear();
     r*=unit;
-    cx.fillStyle = "#3398fd"
+    cx.fillStyle = "#3398fd";
     cx.beginPath();
     cx.moveTo(x0, y0);
     cx.lineTo(x0, y0-r);
@@ -108,8 +119,9 @@ function redraw(){
     cx.fill();
 
     drawGrid(cx, x0, y0);
-
+    drawAllDots();
 }
+//заливаем canvas белым (это фон коорд. плоскости)
 function clear(){
     cx.fillStyle = "#FFFFFF";
     cx.beginPath();
@@ -118,8 +130,9 @@ function clear(){
     cx.lineTo(w, h);
     cx.lineTo(w, 0);
     cx.fill();
+    console.log("cleared");
 }
-
+//чертим оси x, y
 function drawGrid(cx, x, y) {
     cx.fillStyle = "#000000";
     cx.beginPath();
@@ -130,6 +143,7 @@ function drawGrid(cx, x, y) {
     cx.closePath();
     cx.stroke();
     cx.font = '20px serif';
+    //проставляем числа над осями
     for (let i = -scale; i<=scale; i++){
         if (i<=0){
             cx.fillText(i, x+i*unit-10, y+15);
@@ -138,5 +152,53 @@ function drawGrid(cx, x, y) {
         }
         if(i==0){continue;}
         cx.fillText(i, x+2, y-i*unit+5);
+    }
+}
+
+//чертим выбранные точки
+function drawAllDots() {
+    for (let index = 0; index < dots.length; ++index) {
+        drawADot(dots[index]);
+    }
+}
+//чертит точку
+function drawADot(dot){
+    /*let dotX = dot.x*unit + w/2;
+    let dotY = h/2 - dot.y*unit;*/
+
+    let dotX = dot[0]*unit + w/2;
+    let dotY = h/2 - dot[1]*unit;
+
+    cx.fillStyle = "#ee0f22";
+    cx.beginPath();
+    cx.arc(dotX, dotY, 2.5, 0 , Math.PI * 2);
+    cx.fill();
+}
+
+//добавляем точку в хранилище
+function addDot(dot){
+    let arguments = dot.split("&");
+    let dotX;
+    let dotY;
+    for (let index = 0; index < arguments.length; ++index) {
+        if (arguments[index].includes("x")){
+            dotX = arguments[index].split("=")[1];
+        } else if(arguments[index].includes("y")){
+            dotY = arguments[index].split("=")[1];
+        }
+    }
+    if((typeof dotX != 'undefined') &&(typeof dotY != 'undefined')){
+        console.log("Добавляю точку", dotX, dotY);
+        /*let dot = {
+            x: dotX,
+            y: dotY
+        };
+
+        dots.push(dot);*/
+        let dot = [dotX, dotY];
+        console.log("видно");
+        dots.push(dot);
+        //$.cookie('foo', '42');
+        $.cookie('dots', JSON.stringify(dots));
     }
 }

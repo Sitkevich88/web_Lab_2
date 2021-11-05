@@ -9,6 +9,7 @@
     --color-raw-odd: #daf5f5;
     --color-raw-even: #53eeee;
     --color-xbuttons: #2b8a8a;
+    --color-button-submit: #2633CB;
 }
 .theme-dark{
     --color-background: #181818;
@@ -21,6 +22,7 @@
     --color-raw-odd: #daf5f5;
     --color-raw-even: #a9f3f3;
     --color-xbuttons: #2b8a8a;
+    --color-button-submit: indigo;
 }
 
 html, body {
@@ -48,9 +50,12 @@ html, body {
     font-style: italic;
 }
 #switch{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+    font-weight: bold;
     margin-right: 10px;
     padding: 0 5px;
-    background-color: palevioletred;
+    background-color: #bb6ae3;
     float: right;
     border-radius: 8px;
 }
@@ -114,14 +119,23 @@ form > label,span{
 input{
     width: 60px;
 }
+select, input[type=text]{
+    border-radius: 8px;
+}
 form button[type=submit]{
-    background-color: var(--color-header-footer);
+    background-color: var(--color-button-submit);
     color: #edeef0;
     font-weight: normal;
     font-family: "Times New Roman", Times, serif;
     font-style: normal;
-    padding: 3px;
+    font-size: 20px;
+    padding: 3px 10px;
     border-radius: 5px;
+    width: max-content;
+    text-align: center;
+}
+button:hover, input[type=button]:hover {
+    filter: brightness(120%);
 }
 #server_results{
     width: 100%;
@@ -162,4 +176,7 @@ table tr:nth-child(2n+1){
 tr > td:hover{
     border-color: red;
     background-color: greenyellow;
+}
+#switch:active{
+    background-color: darkred;
 }

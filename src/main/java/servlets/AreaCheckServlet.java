@@ -1,7 +1,6 @@
 package servlets;
 
 import extra.XYRResStorage;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AreaCheckServlet extends HttpServlet  {
 
@@ -29,12 +30,24 @@ public class AreaCheckServlet extends HttpServlet  {
             y = Double.parseDouble(yString);
             r = Double.parseDouble(rString);
             boolean isPointInArea = checkArea(x, y, r);
-            Cookie[] cookies = req.getCookies();
-            /*Cookie cookie = new Cookie();*/
             XYRResStorage storage = new XYRResStorage(x, y, r, isPointInArea);
+            Cookie[] cookies = req.getCookies();
+            for (Cookie cookie : cookies){
+                String sessionId = cookie.getValue();
+                if (cookie.getName().equals("JSESSIONID")){
+                    HashMap<String, ArrayList<XYRResStorage>> resStorages = (HashMap<String, ArrayList<XYRResStorage>>) getServletContext().getAttribute("results");
+                    if (resStorages.containsKey(sessionId)){
+                        resStorages.get(sessionId).add(storage);
+                    } else {
+                        ArrayList<XYRResStorage> libraryOfStorages = new ArrayList<>();
+                        libraryOfStorages.add(storage);
+                        resStorages.put(sessionId, libraryOfStorages);
+                    }
+                    break;
+                }
+
+            }
             /*getServletContext().setAttribute("rawOfValues", storage);*/
-            ArrayList<XYRResStorage> resStorages = (ArrayList<XYRResStorage>) getServletContext().getAttribute("results");
-            resStorages.add(storage);
             getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
         } catch (NumberFormatException e){
             resp.sendError(400, "Incorrect arguments"); //todo
@@ -100,6 +113,7 @@ public class AreaCheckServlet extends HttpServlet  {
     @Override
     public void init() throws ServletException {
         super.init();
-        getServletContext().setAttribute("results", new ArrayList<XYRResStorage>());
+        HashMap<String, ArrayList<XYRResStorage>> results = new HashMap<>();
+        getServletContext().setAttribute("results", results);
     }
 }

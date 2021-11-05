@@ -1,3 +1,6 @@
+<%@ page import="extra.XYRResStorage" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.HashMap" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <% request.setCharacterEncoding("UTF-8"); %>
@@ -9,11 +12,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Web project #1</title>
     <link rel="icon" href="icon-programmer-25.jpg">
-    <%--<link rel="stylesheet" href="style.css">--%>
-    <%--<link rel="stylesheet" href="css/structure.css">
-    <link rel="stylesheet" href="css/theme1.css">--%>
     <link rel="stylesheet" href="css/style-with-themes.css">
     <script src="js/themes-changer.js"></script>
+    <%--<script src="js/jquery.cookie-1.4.1.min.js"></script>--%>
+    <script src="js/js.cookie.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="js/input_validation.js"></script>
+    <script src="js/canvasManipulations.js"></script>
+    <script src="js/xButtonsManipulations.js"></script>
 </head>
 <body>
 <header class="header header-or-footer">
@@ -29,15 +36,15 @@
             <form class="form" id="myForm" role="form" >
 
                 <div class="xvalues">
-                    <span>X: </span><input type="button" value="-2" id="x1" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-1.5" id="x2" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-1" id="x3" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-0.5" id="x4" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="0" id="x5" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="0.5" id="x6" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="1" id="x7" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="1.5" id="x8" name="x" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="2" id="x9" name="x" onclick="unbuttonAllExcept(this)">
+                    <span>X: </span><input type="button" value="-2" id="x1" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="-1.5" id="x2" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="-1" id="x3" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="-0.5" id="x4" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="0" id="x5" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="0.5" id="x6" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="1" id="x7" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="1.5" id="x8" onclick="unbuttonAllExcept(this)">
+                    <input type="button" value="2" id="x9" onclick="unbuttonAllExcept(this)">
                     <br><br>
                 </div>
 
@@ -75,7 +82,27 @@
                     <th>R</th>
                     <th>Результат</th>
                 </tr>
-                <c:forEach items="${results}" var="result">
+                <%
+                    ArrayList<XYRResStorage> myResults;
+                    String currentId = "";
+
+                    Cookie[] cookies = request.getCookies();
+                    if (cookies!=null){
+                        for (Cookie cookie : cookies){
+                            if (cookie.getName().equals("JSESSIONID")){
+                                currentId = cookie.getValue();
+                            }
+                        }
+                    }
+                    HashMap<String, ArrayList<XYRResStorage>> allResults = (HashMap<String, ArrayList<XYRResStorage>>) request.getServletContext().getAttribute("results");
+                    if (allResults!=null){
+                        myResults = allResults.get(currentId);
+                    } else {
+                        myResults = new ArrayList<>();
+                    }
+                    pageContext.setAttribute("myResults", myResults);
+                %>
+                <c:forEach items="${myResults}" var="result">
                     <tr>
                         <td>${result.getX()}</td>
                         <td>${result.getY()}</td>
@@ -91,80 +118,5 @@
 
 
 </footer>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js"></script>
-<script>
-    $(document).ready(function () {
-
-        /*$("#submitRequest").click( function(event) {
-            event.preventDefault();
-        });*/
-        $.validator.addMethod("isXButtonClicked", function(value) {
-            let good = true;
-            if (value){
-                good = checkX();
-            }
-            return good;
-        }, 'X is not selected');
-
-        $("#myForm").validate({
-            rules: {
-                "y": {
-                    required: true,
-                    min: -5,
-                    max: 5,
-                    isXButtonClicked: true
-                },
-                "r": {
-                    required: true,
-                    isXButtonClicked: true
-                }
-            },
-            submitHandler: function (form) {
-                var formData = $(form).serialize();
-                console.log(formData);
-                formData= "x=" + globalX + "&" + formData;
-                $.ajax({
-                    url: "controller",
-                    type: "post",
-                    data: formData,
-                    beforeSend: function () {
-
-                    },
-                    success: function (data) {
-                        /*let table = data.getElementById("tbody-results").innerHTML;
-                        document.getElementById("tbody-results").innerHTML = table;*/
-                        document.innerHTML = data;
-                        location.reload(true);
-                    }
-                });
-            }
-        });
-
-    });
-    /*function postIt(formData){
-        $.ajax({
-            url: "controller",
-            type: "post",
-            data: formData,
-            beforeSend: function () {
-
-            },
-            success: function (data) {
-                document.innerHTML = data;
-                location.reload();
-            }
-        });
-    }*/
-    $('#yname').keypress(function (e) {
-        var txt = String.fromCharCode(e.which);
-        if (!txt.match(/[0-9&.-]/)) {
-            return false;
-        }
-    });
-
-</script>
-<script src="js/canvasManipulations.js"></script>
-<script src="js/xButtonsManipulations.js"></script>
 </body>
 </html>

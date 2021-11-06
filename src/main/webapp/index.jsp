@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Web project #1</title>
+    <title>Web project #2</title>
     <link rel="icon" href="icon-programmer-25.jpg">
     <link rel="stylesheet" href="css/style-with-themes.css">
     <script src="js/themes-changer.js"></script>
@@ -18,9 +18,9 @@
     <script src="js/js.cookie.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js"></script>
-    <script src="js/input_validation.js"></script>
-    <script src="js/canvasManipulations.js"></script>
-    <script src="js/xButtonsManipulations.js"></script>
+    <script>
+        var dots = new Array();
+    </script>
 </head>
 <body>
 <header class="header header-or-footer">
@@ -89,20 +89,32 @@
                     Cookie[] cookies = request.getCookies();
                     if (cookies!=null){
                         for (Cookie cookie : cookies){
-                            if (cookie.getName().equals("JSESSIONID")){
+                            if (cookie.getName().equals("sessionId")){
                                 currentId = cookie.getValue();
                             }
                         }
                     }
                     HashMap<String, ArrayList<XYRResStorage>> allResults = (HashMap<String, ArrayList<XYRResStorage>>) request.getServletContext().getAttribute("results");
-                    if (allResults!=null){
+                    if (allResults!=null && allResults.get(currentId)!=null){
                         myResults = allResults.get(currentId);
+                        if(myResults.size()>0){
+                            XYRResStorage lastInputs = myResults.get(myResults.size()-1);
+                            pageContext.setAttribute("x", lastInputs.getX());
+                            pageContext.setAttribute("y", lastInputs.getY());
+                            pageContext.setAttribute("r", lastInputs.getR());
+                        }
                     } else {
                         myResults = new ArrayList<>();
                     }
                     pageContext.setAttribute("myResults", myResults);
                 %>
                 <c:forEach items="${myResults}" var="result">
+                    <%--<script>
+                        dots.push({
+                            x: ${result.getX()},
+                            y: ${result.getY()}
+                        });
+                    </script>--%>
                     <tr>
                         <td>${result.getX()}</td>
                         <td>${result.getY()}</td>
@@ -115,7 +127,28 @@
     </div>
 </div>
 <footer class="footer header-or-footer">
-
+<script src="js/canvasManipulations1.js"></script>
+<script src="js/input_validation.js"></script>
+<script src="js/xButtonsManipulations.js"></script>
+<script>
+<c:forEach items="${myResults}" var="result">
+    dots.push({
+    x: ${result.getX()},
+    y: ${result.getY()}
+});
+</c:forEach>
+</script>
+<%
+    if(myResults!=null && myResults.size()>0)  {
+%>
+<script>
+    setX(${x});
+    setY(${y});
+    $("#rname").val(${r});
+</script>
+<%
+}
+%>
 
 </footer>
 </body>

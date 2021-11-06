@@ -5,7 +5,7 @@ const h = cv.height;
 const scale = 5;
 const unit = (h / (2*scale))*0.9;
 var globalX;
-var dots = new Array();
+/*var dots = new Array();*/
 
 
 //если r уже установлено, то функция нажимает на нужную кнопку x, вводит значение в поле y, сохраняет x в globalX
@@ -42,11 +42,10 @@ function setX(x) {
             }
         }
     }
-    /*globalX = res;*/
     let buttonId = 'x' + ((res + 2)*2+1);
     let button = document.getElementById(buttonId);
     button.click();
-    button.focus();
+    //button.focus();
 }
 //проверка, выбрано ли r
 function isRSet(){
@@ -54,12 +53,14 @@ function isRSet(){
 }
 //при перезагрузке страници отрисовка canvas занаво
 window.onload = function() {
-    dots = JSON.parse($.cookie('dots'));
+    /*if (document.cookie.indexOf('dots=')!=(-1)){
+        dots = JSON.parse($.cookie('dots'));
+    }*/
     redraw();
 }
 //при изменение параметра r изменяется размер фигуры на координатной плоскости
 $(document).ready(function () {
-    $.cookie.json = true;
+    //$.cookie.json = true;
     $("select.rvalues").change(function(){
         redraw();
     });
@@ -87,7 +88,7 @@ cv.addEventListener('click', function(evt) {
     var mousePos = getMousePos(cv, evt);
     setCoordinates(mousePos.x, mousePos.y);
 }, false);
-
+//отрисовка всего
 function redraw(){
     let r;
     const x0 = w/2;
@@ -130,7 +131,6 @@ function clear(){
     cx.lineTo(w, h);
     cx.lineTo(w, 0);
     cx.fill();
-    console.log("cleared");
 }
 //чертим оси x, y
 function drawGrid(cx, x, y) {
@@ -154,7 +154,6 @@ function drawGrid(cx, x, y) {
         cx.fillText(i, x+2, y-i*unit+5);
     }
 }
-
 //чертим выбранные точки
 function drawAllDots() {
     for (let index = 0; index < dots.length; ++index) {
@@ -163,11 +162,8 @@ function drawAllDots() {
 }
 //чертит точку
 function drawADot(dot){
-    /*let dotX = dot.x*unit + w/2;
-    let dotY = h/2 - dot.y*unit;*/
-
-    let dotX = dot[0]*unit + w/2;
-    let dotY = h/2 - dot[1]*unit;
+    let dotX = dot.x*unit + w/2;
+    let dotY = h/2 - dot.y*unit;
 
     cx.fillStyle = "#ee0f22";
     cx.beginPath();
@@ -175,7 +171,7 @@ function drawADot(dot){
     cx.fill();
 }
 
-//добавляем точку в хранилище
+/*//добавляем точку в хранилище
 function addDot(dot){
     let arguments = dot.split("&");
     let dotX;
@@ -189,16 +185,27 @@ function addDot(dot){
     }
     if((typeof dotX != 'undefined') &&(typeof dotY != 'undefined')){
         console.log("Добавляю точку", dotX, dotY);
-        /*let dot = {
+        let dot = {
             x: dotX,
             y: dotY
         };
 
-        dots.push(dot);*/
-        let dot = [dotX, dotY];
-        console.log("видно");
+        dots.push(dot);
+        /!*let dot = [dotX, dotY];
+        for (let i = 0; i<10; i++){
+            console.log("видно");
+        }
         dots.push(dot);
         //$.cookie('foo', '42');
         $.cookie('dots', JSON.stringify(dots));
     }
-}
+}function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}*/
+

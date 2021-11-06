@@ -8,9 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 public class AreaCheckServlet extends HttpServlet  {
 
@@ -25,6 +24,7 @@ public class AreaCheckServlet extends HttpServlet  {
         double x;
         double y;
         double r;
+        String cookieName = "sessionId";
         try{
             x = Double.parseDouble(xString);
             y = Double.parseDouble(yString);
@@ -32,26 +32,38 @@ public class AreaCheckServlet extends HttpServlet  {
             boolean isPointInArea = checkArea(x, y, r);
             XYRResStorage storage = new XYRResStorage(x, y, r, isPointInArea);
             Cookie[] cookies = req.getCookies();
+            boolean cookieExists = false;
             for (Cookie cookie : cookies){
-                String sessionId = cookie.getValue();
-                if (cookie.getName().equals("JSESSIONID")){
-                    HashMap<String, ArrayList<XYRResStorage>> resStorages = (HashMap<String, ArrayList<XYRResStorage>>) getServletContext().getAttribute("results");
-                    if (resStorages.containsKey(sessionId)){
-                        resStorages.get(sessionId).add(storage);
-                    } else {
-                        ArrayList<XYRResStorage> libraryOfStorages = new ArrayList<>();
-                        libraryOfStorages.add(storage);
-                        resStorages.put(sessionId, libraryOfStorages);
-                    }
+                if (cookie.getName().equals(cookieName)){
+                    addCookieToContext(cookie, storage);
+                    cookieExists = true;
                     break;
                 }
-
+            }
+            if (!cookieExists){
+                Cookie cookie = new Cookie(cookieName, UUID.randomUUID().toString());
+                cookie.setMaxAge(60*60*24);
+                resp.addCookie(cookie);
+                addCookieToContext(cookie, storage);
             }
             /*getServletContext().setAttribute("rawOfValues", storage);*/
-            getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+
         } catch (NumberFormatException e){
-            resp.sendError(400, "Incorrect arguments"); //todo
-            resp.getOutputStream().close();
+            /*resp.sendError(400, "Incorrect arguments"); //todo
+            resp.getOutputStream().close();*/
+        }finally {
+            getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+        }
+    }
+    private void addCookieToContext(Cookie cookie, XYRResStorage storage){
+        String sessionId = cookie.getValue();
+        HashMap<String, ArrayList<XYRResStorage>> resStorages = (HashMap<String, ArrayList<XYRResStorage>>) getServletContext().getAttribute("results");
+        if (resStorages.containsKey(sessionId)){
+            resStorages.get(sessionId).add(storage);
+        } else {
+            ArrayList<XYRResStorage> libraryOfStorages = new ArrayList<>();
+            libraryOfStorages.add(storage);
+            resStorages.put(sessionId, libraryOfStorages);
         }
     }
 

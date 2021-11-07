@@ -12,8 +12,6 @@ public class ControllerServlet extends HttpServlet {
         boolean containsKeys = params.containsKey("x") && params.containsKey("y") && params.containsKey("r");
         if (containsKeys && params.get("x")!=null && params.get("y")!=null && params.get("r")!=null){
             try {
-                getServletContext();
-                getServletContext().getNamedDispatcher("AreaCheckServlet");
                 getServletContext().getNamedDispatcher("AreaCheckServlet").forward(request, response);
             } catch (ServletException | IOException e) {
                 log(e.getMessage());

@@ -33,35 +33,42 @@
             <canvas id="graph" class="image" width="250" height="250">
                 Your browser does not support the HTML5 canvas tag.</canvas>
             <br>
-            <form class="form" id="myForm" role="form" >
+            <div id="extended_form">
+                <form class="form" id="myForm" role="form" >
 
-                <div class="xvalues">
-                    <span>X: </span><input type="button" value="-2" id="x1" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-1.5" id="x2" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-1" id="x3" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="-0.5" id="x4" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="0" id="x5" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="0.5" id="x6" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="1" id="x7" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="1.5" id="x8" onclick="unbuttonAllExcept(this)">
-                    <input type="button" value="2" id="x9" onclick="unbuttonAllExcept(this)">
+                    <div class="xvalues">
+                        <span>X: </span><input type="button" value="-2" id="x1" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="-1.5" id="x2" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="-1" id="x3" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="-0.5" id="x4" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="0" id="x5" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="0.5" id="x6" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="1" id="x7" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="1.5" id="x8" onclick="unbuttonAllExcept(this)">
+                        <input type="button" value="2" id="x9" onclick="unbuttonAllExcept(this)">
+                        <br><br>
+                    </div>
+
+                    <label for="yname">Y: </label>
+                    <input autocomplete="false" type="text" id="yname" name="y"><br><br>
+
+                    <label for="rname">R: </label>
+                    <select id="rname" name="r" required class="rvalues">
+                        <option hidden disabled selected value>Надо выбрать</option>
+                        <option value=1>1</option>
+                        <option value=1.5>1.5</option>
+                        <option value=2>2</option>
+                        <option value=2.5>2.5</option>
+                        <option value=3>3</option>
+                    </select>
+                    <span style="visibility: hidden" id="r-error">Сначала надо ввести R</span>
+
                     <br><br>
-                </div>
-
-                <label for="yname">Y: </label>
-                <input autocomplete="false" type="text" id="yname" name="y"><br><br>
-                <label for="rname">R: </label>
-                <select id="rname" name="r" required class="rvalues">
-                    <option hidden disabled selected value>Надо выбрать</option>
-                    <option value=1>1</option>
-                    <option value=1.5>1.5</option>
-                    <option value=2>2</option>
-                    <option value=2.5>2.5</option>
-                    <option value=3>3</option>
-                </select>
-                <br><br>
-                <button type="submit" id="submitRequest">Отправить</button>
-            </form>
+                    <button type="submit" id="submitRequest" class="pretty-button">Отправить</button>
+                </form>
+                <br>
+                <button type="submit" id="clearAll" class="pretty-button" onclick="clearAll()">Отчистить таблицу</button>
+            </div>
         </div>
     </div>
     <%--<%!public static ArrayList<XYRResStorage> listOfStorages = new ArrayList<>();%>
@@ -127,8 +134,8 @@
     </div>
 </div>
 <footer class="footer header-or-footer">
-<script src="js/canvasManipulations1.js"></script>
-<script src="js/input_validation.js"></script>
+<script src="js/canvasManipulations2.js"></script>
+<script src="js/input_validation_and_submit.js"></script>
 <script src="js/xButtonsManipulations.js"></script>
 <script>
 <c:forEach items="${myResults}" var="result">

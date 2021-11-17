@@ -9,17 +9,22 @@ public class ControllerServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map params = request.getParameterMap();
+        boolean hasToClear = params.containsKey("do") && request.getParameter("do").equals("clear");
         boolean containsKeys = params.containsKey("x") && params.containsKey("y") && params.containsKey("r");
-        if (containsKeys && params.get("x")!=null && params.get("y")!=null && params.get("r")!=null){
+        if (hasToClear){
             try {
-                getServletContext();
-                getServletContext().getNamedDispatcher("AreaCheckServlet");
+                getServletContext().getNamedDispatcher("ClearServlet").forward(request, response);
+            } catch (ServletException | IOException e) {
+                log(e.getMessage());
+            }
+        }else if (containsKeys && params.get("x")!=null && params.get("y")!=null && params.get("r")!=null){
+            try {
                 getServletContext().getNamedDispatcher("AreaCheckServlet").forward(request, response);
             } catch (ServletException | IOException e) {
                 log(e.getMessage());
             }
         } else {
-            response.sendError(400, "Not enough arguments");
+            response.sendError(400, "Incorrect Request");
             response.getOutputStream().close();
         }
     }

@@ -16,8 +16,8 @@
         <servlet-name>AreaCheckServlet</servlet-name>
         <servlet-class>servlets.AreaCheckServlet</servlet-class>
     </servlet>
-    <!--<servlet>
-        <servlet-name>JSP</servlet-name>
-        <servlet-class>servlets.JSP</servlet-class>
-    </servlet>-->
+    <servlet>
+        <servlet-name>ClearServlet</servlet-name>
+        <servlet-class>servlets.ClearServlet</servlet-class>
+    </servlet>
 </web-app>

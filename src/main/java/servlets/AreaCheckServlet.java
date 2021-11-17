@@ -126,6 +126,8 @@ public class AreaCheckServlet extends HttpServlet  {
     public void init() throws ServletException {
         super.init();
         HashMap<String, ArrayList<XYRResStorage>> results = new HashMap<>();
-        getServletContext().setAttribute("results", results);
+        if (getServletContext().getAttribute("results")==null){
+            getServletContext().setAttribute("results", results);
+        }
     }
 }

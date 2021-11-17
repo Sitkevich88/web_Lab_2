@@ -8,13 +8,22 @@ var globalX;
 /*var dots = new Array();*/
 
 
+
+/*function showRError(){
+    $("#r-error").css({"visibility":"visible"});
+}
+function hideRError(){
+    $("#r-error").css({"visibility":"hidden"});
+}*/
 //если r уже установлено, то функция нажимает на нужную кнопку x, вводит значение в поле y, сохраняет x в globalX
 function setCoordinates(x, y) {
     if (isRSet()){
         setX(x);
         setY(y);
     } else {
-        alert("Сначала надо определить R");
+        /*alert("Сначала надо определить R");*/
+        /*showRError();*/
+        $('#r-error').css({"visibility":"visible"});
     }
 }
 //валидация y, ввод значения в поле
@@ -24,7 +33,7 @@ function setY(y){
     }else if(y>5){
         y=5;
     }
-    document.getElementById("yname").value = y.toFixed(3);;
+    document.getElementById("yname").value = y.toFixed(3);
 }
 //валидация x, выбор нужной кнопки
 function setX(x) {
@@ -63,6 +72,8 @@ $(document).ready(function () {
     //$.cookie.json = true;
     $("select.rvalues").change(function(){
         redraw();
+        /*hideRError();*/
+        $('#r-error').css({"visibility":"hidden"});
     });
 })
 //мы определяем координаты клика на canvas
@@ -150,7 +161,7 @@ function drawGrid(cx, x, y) {
         }else {
             cx.fillText(i, x+i*unit-5, y+15);
         }
-        if(i==0){continue;}
+        if(i===0){continue;}
         cx.fillText(i, x+2, y-i*unit+5);
     }
 }

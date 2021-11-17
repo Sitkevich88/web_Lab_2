@@ -68,6 +68,21 @@ $(document).ready(function () {
     });
 });
 
+function clearAll(){
+    $.ajax({
+        url: "controller",
+        type: "post",
+        data: "do=clear",
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            document.innerHTML = data; //устанавливаю принятый html
+            location.reload();
+        }
+    });
+}
+
 //блокирую ввод недопустимых значений в поле y
 $('#yname').keypress(function (e) {
     var txt = String.fromCharCode(e.which);

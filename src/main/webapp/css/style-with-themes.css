@@ -107,11 +107,13 @@ p.header{
         width: 100%;
     }
 }
+#extended_form{
+    background-color: var(--color-form);
+    padding: 10px;
+}
 .form{
     display: block;
     margin: auto;
-    padding: 10px;
-    background-color: var(--color-form);
 }
 form > label,span{
     font-weight: bold;
@@ -122,17 +124,18 @@ input{
 select, input[type=text]{
     border-radius: 8px;
 }
-form button[type=submit]{
+.pretty-button{
     background-color: var(--color-button-submit);
     color: #edeef0;
     font-weight: normal;
     font-family: "Times New Roman", Times, serif;
     font-style: normal;
-    font-size: 20px;
+    font-size: 15px;
     padding: 3px 10px;
     border-radius: 5px;
     width: max-content;
     text-align: center;
+    /*display: inline-block;*/
 }
 button:hover, input[type=button]:hover {
     filter: brightness(120%);
